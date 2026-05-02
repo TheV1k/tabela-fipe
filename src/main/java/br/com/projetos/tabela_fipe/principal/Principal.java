@@ -3,7 +3,6 @@ import br.com.projetos.tabela_fipe.model.*;
 import br.com.projetos.tabela_fipe.service.ConsumoApi;
 import br.com.projetos.tabela_fipe.service.ConverteDados;
 import tools.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,23 @@ public class Principal {
     List<Veiculo> arquivoVeiculos = new ArrayList<>();
 
     public void exibeMenu() {
+        var json = consumo.obterDados(ENDERECO);
+        String tipoVeiculo = null;
 
-        System.out.println("Digite o tipo de veiculo (Carros/Motos/Caminhões)");
-        var tipoVeiculo = sc.nextLine().toLowerCase().trim();
-        var json = consumo.obterDados(ENDERECO + tipoVeiculo + "/marcas/");
-        List<DadosVeiculo> veiculos = conversor.obterLista(json, DadosVeiculo.class);
-        veiculos.forEach(v -> System.out.printf("Cód: %s | Marca: %s\n", v.codigo(), v.marca()));
+        while (true){
+            try{
+                System.out.println("Digite o tipo de veiculo (Carros/Motos/Caminhões)");
+               tipoVeiculo = sc.nextLine().toLowerCase().trim();
+                json = consumo.obterDados(ENDERECO + tipoVeiculo + "/marcas/");
+                List<DadosVeiculo> veiculos = conversor.obterLista(json, DadosVeiculo.class);
+                veiculos.forEach(v -> System.out.printf("Cód: %s | Marca: %s\n", v.codigo(), v.marca()));
+                break;
+
+            } catch (Exception e){
+                System.out.println("Veículo inválido");
+            }
+        }
+
        Modelos resposta = null;
        String codMarca = null;
         while (true)
@@ -62,7 +72,7 @@ public class Principal {
         for (int i = 0; i < organizaAnos.size() ; i++) {
 
             var anoVeiculo = organizaAnos.get(i);
-            json = consumo.obterDados(ENDERECO + tipoVeiculo + "/marcas/" + codMarca + "/modelos/" + codModelo + "/anos/" + anoVeiculo);
+            json = consumo.obterDados(ENDERECO + tipoVeiculo + "/marcas/" + codMarca + "/modelos/" + codModelo + "/anos/" + anoVeiculo.codigo());
             Veiculo informacoesVeiculo = conversor.obterDados(json, Veiculo.class);
 
             arquivoVeiculos.add(informacoesVeiculo);
