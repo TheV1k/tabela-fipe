@@ -2,6 +2,10 @@ package br.com.projetos.tabela_fipe.principal;
 import br.com.projetos.tabela_fipe.model.*;
 import br.com.projetos.tabela_fipe.service.ConsumoApi;
 import br.com.projetos.tabela_fipe.service.ConverteDados;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,6 +15,8 @@ public class Principal {
     private ConsumoApi consumo = new ConsumoApi();
     private ConverteDados conversor = new ConverteDados();
     private final String ENDERECO = "https://parallelum.com.br/fipe/api/v1/";
+    ObjectMapper mapper = new ObjectMapper();
+    List<Veiculo> arquivoVeiculos = new ArrayList<>();
 
     public void exibeMenu() {
 
@@ -58,11 +64,12 @@ public class Principal {
             var anoVeiculo = organizaAnos.get(i);
             json = consumo.obterDados(ENDERECO + tipoVeiculo + "/marcas/" + codMarca + "/modelos/" + codModelo + "/anos/" + anoVeiculo);
             Veiculo informacoesVeiculo = conversor.obterDados(json, Veiculo.class);
+
+            arquivoVeiculos.add(informacoesVeiculo);
             System.out.println(informacoesVeiculo);
+
+            mapper.writeValue(new File("dados_tabela_fipe.json"), arquivoVeiculos);
         }
-
-
-
 
     }
 }
