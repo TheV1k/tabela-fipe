@@ -26,7 +26,12 @@ public class Principal {
 
         while (true){
             try{
-                System.out.println("Digite o tipo de veiculo (Carros/Motos/Caminhões)");
+                System.out.println("Digite o tipo de veiculo:" +
+                        "\n************" +
+                        " \nCARROS" +
+                        "\nMOTOS" +
+                        "\nCAMINHÕES" +
+                        "\n************");
                tipoVeiculo = sc.nextLine().toLowerCase().trim();
                 pesquisaVeiculo = removeAcentos(tipoVeiculo);
                 json = consumo.obterDados(ENDERECO + pesquisaVeiculo + "/marcas/");
