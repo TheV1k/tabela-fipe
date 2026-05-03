@@ -21,7 +21,7 @@ public class Veiculo {
          this.valor = valor;
          this.marca = marca;
         this.modelo = modelo;
-        this.ano = ano;
+         this.ano = ano;
         this.combustivel = combustivel;
     }
 

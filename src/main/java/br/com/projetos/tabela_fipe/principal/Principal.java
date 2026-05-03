@@ -5,6 +5,7 @@ import br.com.projetos.tabela_fipe.service.ConverteDados;
 import tools.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -35,9 +36,12 @@ public class Principal {
                tipoVeiculo = sc.nextLine().toLowerCase().trim();
                 pesquisaVeiculo = removeAcentos(tipoVeiculo);
                 json = consumo.obterDados(ENDERECO + pesquisaVeiculo + "/marcas/");
-                List<DadosVeiculo> veiculos = null;
-                veiculos = conversor.obterLista(json, DadosVeiculo.class);
-                veiculos.forEach(v -> System.out.printf("Cód: %s | Marca: %s\n", v.codigo(), v.marca()));
+                List<Dados> veiculos = null;
+                veiculos = conversor.obterLista(json, Dados.class);
+                veiculos
+                        .stream()
+                        .sorted(Comparator.comparing(Dados::codigo))
+                        .forEach(v -> System.out.printf("Cód: %s | Marca: %s\n", v.codigo(), v.nome()));
                 break;
             } catch (IllegalArgumentException e){
                 System.out.println("Veículo inválido");
@@ -68,7 +72,7 @@ public class Principal {
             System.out.println("Digite parte do nome do modelo desejado: ");
 
         var pesquisaModelo = sc.nextLine().toLowerCase().trim();
-        List<DadosMarca> modelosFiltrados = resposta.modelos()
+        List<Dados> modelosFiltrados = resposta.modelos()
                 .stream()
                 .filter(n -> n.nome().toLowerCase().contains(pesquisaModelo))
                 .toList();
@@ -91,7 +95,7 @@ public class Principal {
             return;
         }
         json = consumo.obterDados(ENDERECO + pesquisaVeiculo + "/marcas/" + codMarca + "/modelos/" + codModelo + "/anos/");
-        List<DadosAnos> organizaAnos = conversor.obterLista(json, DadosAnos.class);
+        List<Dados> organizaAnos = conversor.obterLista(json, Dados.class);
         if (organizaAnos == null || organizaAnos.isEmpty()) {
             System.out.println("Nenhum veículo encontrado.");
             return;
